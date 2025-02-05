@@ -4,11 +4,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class TwitchStreamChecker extends JFrame {
 
@@ -22,25 +25,34 @@ public class TwitchStreamChecker extends JFrame {
         setSize(500, 300);
         setLayout(new FlowLayout());
         setIconImage(new ImageIcon("src/main/resources/twitch_icon.png").getImage());
-        getContentPane().setBackground(Color.decode("#5e5e5e"));
+
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1)); // Tetszőleges számú sor, egy oszlop,
-        panel.setBackground(Color.decode("#5e5e5e"));
-        panel.setForeground(Color.decode("#8400ff"));
 
-        panel.add(new JLabel("Channel Name:"));
+        JLabel channelNameLabel = new JLabel("Channel Name:");
+        channelNameLabel.setForeground(Color.decode("#8400ff"));
+        panel.add(channelNameLabel);
         channelNameField = new JTextField(15);
         panel.add(channelNameField);
+        channelNameField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String channelName = channelNameField.getText();
+                    checkStreamStatus(channelName);
+                }
+            }
+        });
         checkButton = new JButton("Check");
+        checkButton.setBackground(Color.decode("#e4c7ff"));
+        checkButton.setForeground(Color.decode("#8400ff"));
         panel.add(checkButton);
-        panel.add(new JLabel("Enter a Twitch channel name to check..."));
         resultLabel = new JLabel("");
-        resultLabel.setOpaque(true);
-        resultLabel.setBackground(Color.decode("#5e5e5e"));
+        resultLabel.setForeground(Color.decode("#8400ff"));
         panel.add(resultLabel);
 
         add(panel);
