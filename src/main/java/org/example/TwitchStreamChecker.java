@@ -57,13 +57,21 @@ public class TwitchStreamChecker extends JFrame {
 
     private void checkStreamStatus(String channelName) {
         try {
-            String url = "https://www.twitch.tv/" + channelName;
+            String url = "https://www.twitch.tv/" + channelName.toLowerCase();
             Document doc = Jsoup.connect(url).get();
             boolean isLive = doc.html().contains("isLiveBroadcast");
 
             if (isLive) {
                 resultLabel.setText("Stream is live!");
-                openStreamInChrome(url);
+
+                Timer timer = new Timer(1500, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        openStreamInChrome(url);
+                    }
+                });
+                timer.setRepeats(false);
+                timer.start();
             } else {
                 resultLabel.setText("Stream is offline.");
             }
