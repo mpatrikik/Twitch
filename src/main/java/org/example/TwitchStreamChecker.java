@@ -19,17 +19,31 @@ public class TwitchStreamChecker extends JFrame {
     public TwitchStreamChecker() {
         setTitle("Twitch Stream Checker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 200);
+        setSize(500, 300);
         setLayout(new FlowLayout());
+        setIconImage(new ImageIcon("src/main/resources/twitch_icon.png").getImage());
+        getContentPane().setBackground(Color.decode("#5e5e5e"));
 
-        channelNameField = new JTextField(20);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 1)); // Tetszőleges számú sor, egy oszlop,
+        panel.setBackground(Color.decode("#5e5e5e"));
+        panel.setForeground(Color.decode("#8400ff"));
+
+        panel.add(new JLabel("Channel Name:"));
+        channelNameField = new JTextField(15);
+        panel.add(channelNameField);
         checkButton = new JButton("Check");
+        panel.add(checkButton);
+        panel.add(new JLabel("Enter a Twitch channel name to check..."));
         resultLabel = new JLabel("");
+        resultLabel.setOpaque(true);
+        resultLabel.setBackground(Color.decode("#5e5e5e"));
+        panel.add(resultLabel);
 
-        add(new JLabel("Channel Name:"));
-        add(channelNameField);
-        add(checkButton);
-        add(resultLabel);
+        add(panel);
 
         checkButton.addActionListener(new ActionListener() {
             @Override
@@ -38,7 +52,6 @@ public class TwitchStreamChecker extends JFrame {
                 checkStreamStatus(channelName);
             }
         });
-
         setVisible(true);
     }
 
