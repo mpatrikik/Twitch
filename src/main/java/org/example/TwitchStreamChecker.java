@@ -4,7 +4,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,16 +25,16 @@ public class TwitchStreamChecker extends JFrame {
         setLayout(new FlowLayout());
         setIconImage(new ImageIcon("src/main/resources/twitch_icon.png").getImage());
 
-
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1)); // Tetszőleges számú sor, egy oszlop,
+        panel.setLayout(new GridLayout(0, 1));
 
         JLabel channelNameLabel = new JLabel("Channel Name:");
         channelNameLabel.setForeground(Color.decode("#8400ff"));
         panel.add(channelNameLabel);
+
         channelNameField = new JTextField(15);
         panel.add(channelNameField);
         channelNameField.addKeyListener(new KeyAdapter() {
@@ -75,15 +74,10 @@ public class TwitchStreamChecker extends JFrame {
 
             if (isLive) {
                 resultLabel.setText("Stream is live!");
-
-                Timer timer = new Timer(1500, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        openStreamInChrome(url);
-                    }
-                });
-                timer.setRepeats(false);
-                timer.start();
+                int response = JOptionPane.showConfirmDialog(this, "Open stream in Chrome?", "Stream Online", JOptionPane.YES_NO_OPTION);
+                if (response == JOptionPane.YES_OPTION) {
+                    openStreamInChrome(url);
+                }
             } else {
                 resultLabel.setText("Stream is offline.");
             }
