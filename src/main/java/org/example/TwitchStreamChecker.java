@@ -1,72 +1,43 @@
 package org.example;
 
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.awt.Desktop;
 
-public class TwitchStreamChecker extends JFrame {
+public class TwitchStreamChecker extends Application {
 
-    private JTextField channelNameField;
-    private JButton checkButton;
-    private JLabel resultLabel;
+    private TextField channelNameField;
+    private Label resultLabel;
 
-    public TwitchStreamChecker() {
-        setTitle("Twitch Stream Checker");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 300);
-        setLayout(new FlowLayout());
-        setIconImage(new ImageIcon("src/main/resources/twitch_icon.png").getImage());
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Twitch Stream Checker");
 
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
+        Label channelNameLabel = new Label("Channel Name:");
+        channelNameField = new TextField();
+        Button checkButton = new Button("Check");
+        resultLabel = new Label();
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 1));
+        checkButton.setOnAction(e -> checkStreamStatus(channelNameField.getText()));
+        channelNameField.setOnAction(e -> checkStreamStatus(channelNameField.getText()));
 
-        JLabel channelNameLabel = new JLabel("Channel Name:");
-        channelNameLabel.setForeground(Color.decode("#8400ff"));
-        panel.add(channelNameLabel);
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(channelNameLabel, channelNameField, checkButton, resultLabel);
 
-        channelNameField = new JTextField(15);
-        panel.add(channelNameField);
-        channelNameField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String channelName = channelNameField.getText();
-                    checkStreamStatus(channelName);
-                }
-            }
-        });
-        checkButton = new JButton("Check");
-        checkButton.setBackground(Color.decode("#e4c7ff"));
-        checkButton.setForeground(Color.decode("#8400ff"));
-        panel.add(checkButton);
-        resultLabel = new JLabel("");
-        resultLabel.setForeground(Color.decode("#8400ff"));
-        panel.add(resultLabel);
-
-        add(panel);
-
-        checkButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String channelName = channelNameField.getText();
-                checkStreamStatus(channelName);
-            }
-        });
-        setVisible(true);
+        Scene scene = new Scene(layout, 400, 250);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private void checkStreamStatus(String channelName) {
@@ -77,10 +48,12 @@ public class TwitchStreamChecker extends JFrame {
 
             if (isLive) {
                 resultLabel.setText("Stream is live!");
-                int response = JOptionPane.showConfirmDialog(this, "Open stream in Chrome?", "Stream Online", JOptionPane.YES_NO_OPTION);
-                if (response == JOptionPane.YES_OPTION) {
-                    openStreamInChrome(url);
-                }
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "The stream is live! Do you want to open it?", ButtonType.YES, ButtonType.NO);
+                alert.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.YES) {
+                        openStreamInBrowser(url);
+                    }
+                });
             } else {
                 resultLabel.setText("Stream is offline.");
             }
@@ -90,19 +63,20 @@ public class TwitchStreamChecker extends JFrame {
         }
     }
 
-    private void openStreamInChrome(String url) {
-        if (Desktop.isDesktopSupported()){
+    private void openStreamInBrowser(String url) {
+        if (Desktop.isDesktopSupported()) {
             try {
                 Desktop.getDesktop().browse(new URI(url));
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
             }
         } else {
-            JOptionPane.showConfirmDialog(this, "Failed to open browser. Please open manually: " + url);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open browser. Please open manually: " + url, ButtonType.OK);
+            alert.showAndWait();
         }
     }
 
     public static void main(String[] args) {
-        new TwitchStreamChecker();
+        launch(args);
     }
 }
