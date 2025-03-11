@@ -16,12 +16,16 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TwitchStreamChecker extends Application {
 
     private TextField channelNameField;
     private Label resultLabel;
+    private ComboBox<String> channelComboBox;
+    private List<String> channels;
 
     @Override
     public void start(Stage primaryStage) {
@@ -32,11 +36,19 @@ public class TwitchStreamChecker extends Application {
 
         Label channelNameLabel = new Label("Please enter channel name:");
         channelNameField = new TextField();
+        channelComboBox = new ComboBox<>();
         Button checkButton = new Button("Check");
         resultLabel = new Label();
 
+        channels = ChannelDataManager.loadChannels();
+        if (channels == null) {
+            channels = new ArrayList<>();
+        }
+        channelComboBox.getItems().addAll(channels);
+
         checkButton.setOnAction(e -> checkStreamStatus(channelNameField.getText()));
         channelNameField.setOnAction(e -> checkStreamStatus(channelNameField.getText()));
+        channelComboBox.setOnAction(e -> channelNameField.setText(channelComboBox.getValue()));
 
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
@@ -49,10 +61,11 @@ public class TwitchStreamChecker extends Application {
 
         VBox.setMargin(channelNameLabel, new Insets(0, 10, 0, 10));
         VBox.setMargin(channelNameField, new Insets(0, 100, 0, 100));
+        VBox.setMargin(channelComboBox, new Insets(0, 100, 0, 100));
         VBox.setMargin(checkButton, new Insets(0, 10, 0, 10));
         VBox.setMargin(resultLabel, new Insets(10));
 
-        layout.getChildren().addAll(channelNameLabel, channelNameField, checkButton, resultLabel);
+        layout.getChildren().addAll(channelNameLabel, channelNameField, channelComboBox, checkButton, resultLabel);
 
         ScrollPane scrollPane = new ScrollPane(layout);
         scrollPane.setFitToWidth(true);
@@ -62,12 +75,8 @@ public class TwitchStreamChecker extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            layout.setPrefWidth(newVal.doubleValue());
-        });
-        primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            layout.setPrefHeight(newVal.doubleValue());
-        });
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> { layout.setPrefWidth(newVal.doubleValue()); });
+        primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> { layout.setPrefHeight(newVal.doubleValue()); });
     }
 
     private void checkStreamStatus(String channelName) {
@@ -84,9 +93,13 @@ public class TwitchStreamChecker extends Application {
                         openStreamInBrowser(url);
                     }
                 });
-            } else {
-                resultLabel.setText("The stream offline.");
-            }
+
+                if (!channels.contains(channelName)) {
+                    channels.add(channelName);
+                    ChannelDataManager.saveChannels(channels);
+                    channelComboBox.getItems().add(channelName);
+                }
+            } else { resultLabel.setText("The stream offline."); }
         } catch (Exception ex) {
             resultLabel.setText("Error: " + ex.getMessage());
             ex.printStackTrace();
