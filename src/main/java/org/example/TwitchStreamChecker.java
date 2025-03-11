@@ -48,12 +48,17 @@ public class TwitchStreamChecker extends Application {
 
         checkButton.setOnAction(e -> checkStreamStatus(channelNameField.getText()));
         channelNameField.setOnAction(e -> checkStreamStatus(channelNameField.getText()));
-        channelComboBox.setOnAction(e -> channelNameField.setText(channelComboBox.getValue()));
+        channelComboBox.setOnAction(e -> {
+                String selectedChannel = channelComboBox.getValue();
+                if (selectedChannel != null) {
+                    channelNameField.setText(selectedChannel);
+                    checkStreamStatus(selectedChannel);
+                }
+        });
 
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
-
         layout.setBackground(new Background(new BackgroundFill(Color.rgb(164, 119, 255), CornerRadii.EMPTY, Insets.EMPTY)));
         channelNameLabel.setTextFill(Color.WHITE);
         resultLabel.setTextFill(Color.WHITE);
@@ -66,7 +71,6 @@ public class TwitchStreamChecker extends Application {
         VBox.setMargin(resultLabel, new Insets(10));
 
         layout.getChildren().addAll(channelNameLabel, channelNameField, channelComboBox, checkButton, resultLabel);
-
         ScrollPane scrollPane = new ScrollPane(layout);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
