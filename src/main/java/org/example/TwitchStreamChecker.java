@@ -40,14 +40,23 @@ public class TwitchStreamChecker extends Application {
 
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
-        layout.setPadding(new Insets(120));
+        layout.setPadding(new Insets(10));
 
-        layout.setBackground(new Background(new BackgroundFill(Color.rgb(100, 65, 165), CornerRadii.EMPTY, Insets.EMPTY)));
+        layout.setBackground(new Background(new BackgroundFill(Color.rgb(164, 119, 255), CornerRadii.EMPTY, Insets.EMPTY)));
         channelNameLabel.setTextFill(Color.WHITE);
         resultLabel.setTextFill(Color.WHITE);
-        checkButton.setStyle("-fx-background-color: #9146FF; -fx-text-fill: white;");
+        checkButton.setStyle("-fx-background-color: #6441a5 ; -fx-text-fill: white;");
+
+        VBox.setMargin(channelNameLabel, new Insets(0, 10, 0, 10));
+        VBox.setMargin(channelNameField, new Insets(0, 100, 0, 100));
+        VBox.setMargin(checkButton, new Insets(0, 10, 0, 10));
+        VBox.setMargin(resultLabel, new Insets(10));
 
         layout.getChildren().addAll(channelNameLabel, channelNameField, checkButton, resultLabel);
+
+        ScrollPane scrollPane = new ScrollPane(layout);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
 
         Scene scene = new Scene(layout, 400, 250);
         primaryStage.setScene(scene);
