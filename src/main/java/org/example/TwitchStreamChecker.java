@@ -52,7 +52,6 @@ public class TwitchStreamChecker extends Application {
                 String selectedChannel = channelComboBox.getValue();
                 if (selectedChannel != null) {
                     channelNameField.setText(selectedChannel);
-                    checkStreamStatus(selectedChannel);
                 }
         });
 
@@ -87,11 +86,19 @@ public class TwitchStreamChecker extends Application {
         try {
             String url = "https://www.twitch.tv/" + channelName.toLowerCase();
             Document doc = Jsoup.connect(url).get();
-            boolean isLive = doc.html().contains("isLiveBroadcast");
+            System.out.println(doc.html());
+
+            if (doc.select("p[data-a-target=core-error-message]").size() > 0 && doc.select("a[data-a-target=browse-channels-button]").size() > 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error: This channel does not exist!", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
+
+            boolean isLive = doc.text().contains("isLiveBroadcast");
 
             if (isLive) {
                 resultLabel.setText("Channel is streaming!");
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Streaming, want to open?", ButtonType.YES, ButtonType.NO);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Streaming, want to open on browser?", ButtonType.YES, ButtonType.NO);
                 alert.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.YES) {
                         openStreamInBrowser(url);
@@ -103,7 +110,7 @@ public class TwitchStreamChecker extends Application {
                     ChannelDataManager.saveChannels(channels);
                     channelComboBox.getItems().add(channelName);
                 }
-            } else { resultLabel.setText("The stream offline."); }
+            } else { resultLabel.setText("Stream is offline."); }
         } catch (Exception ex) {
             resultLabel.setText("Error: " + ex.getMessage());
             ex.printStackTrace();
