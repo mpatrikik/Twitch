@@ -35,6 +35,7 @@ public class TwitchStreamChecker extends Application {
         primaryStage.getIcons().add(icon);
 
         Label channelNameLabel = new Label("Please enter channel name:");
+        channelNameLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
         channelNameField = new TextField();
         channelComboBox = new ComboBox<>();
         Button checkButton = new Button("Check");
@@ -55,6 +56,10 @@ public class TwitchStreamChecker extends Application {
                 }
         });
 
+        HBox inputContainer = new HBox(10);
+        inputContainer.setAlignment(Pos.CENTER);
+        inputContainer.getChildren().addAll(channelNameLabel, channelNameField);
+
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
@@ -69,7 +74,7 @@ public class TwitchStreamChecker extends Application {
         VBox.setMargin(checkButton, new Insets(0, 10, 0, 10));
         VBox.setMargin(resultLabel, new Insets(10));
 
-        layout.getChildren().addAll(channelNameLabel, channelNameField, channelComboBox, checkButton, resultLabel);
+        layout.getChildren().addAll(inputContainer, channelComboBox, checkButton, resultLabel);
         ScrollPane scrollPane = new ScrollPane(layout);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
@@ -86,8 +91,8 @@ public class TwitchStreamChecker extends Application {
         try {
             String url = "https://www.twitch.tv/" + channelName.toLowerCase();
             Document doc = Jsoup.connect(url).get();
-
-            boolean isLive = doc.html().contains("\"isLiveBroadcast\":true");
+            boolean isLive = doc.html().contains("isLiveBroadcast");
+            System.out.println(doc.html());
 
             if (isLive) {
                 resultLabel.setText("Channel is streaming!");
