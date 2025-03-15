@@ -86,15 +86,8 @@ public class TwitchStreamChecker extends Application {
         try {
             String url = "https://www.twitch.tv/" + channelName.toLowerCase();
             Document doc = Jsoup.connect(url).get();
-            System.out.println(doc.html());
 
-            if (doc.select("p[data-a-target=core-error-message]").size() > 0 && doc.select("a[data-a-target=browse-channels-button]").size() > 0) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Error: This channel does not exist!", ButtonType.OK);
-                alert.showAndWait();
-                return;
-            }
-
-            boolean isLive = doc.text().contains("isLiveBroadcast");
+            boolean isLive = doc.html().contains("\"isLiveBroadcast\":true");
 
             if (isLive) {
                 resultLabel.setText("Channel is streaming!");
@@ -110,7 +103,9 @@ public class TwitchStreamChecker extends Application {
                     ChannelDataManager.saveChannels(channels);
                     channelComboBox.getItems().add(channelName);
                 }
-            } else { resultLabel.setText("Stream is offline."); }
+            } else {
+                resultLabel.setText("Stream is offline.");
+            }
         } catch (Exception ex) {
             resultLabel.setText("Error: " + ex.getMessage());
             ex.printStackTrace();
