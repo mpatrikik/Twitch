@@ -126,6 +126,7 @@ public class TwitchStreamChecker extends Application {
                 alert.showAndWait().ifPresent(response -> {
                     if (response == yesButton) {
                         openStreamInBrowser(url);
+                        new StreamMonitor(channelName).start();
                     }
                 });
 
