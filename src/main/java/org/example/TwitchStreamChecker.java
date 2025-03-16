@@ -56,25 +56,37 @@ public class TwitchStreamChecker extends Application {
                 }
         });
 
-        HBox inputContainer = new HBox(10);
-        inputContainer.setAlignment(Pos.CENTER);
-        inputContainer.getChildren().addAll(channelNameLabel, channelNameField);
+
 
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
         layout.setBackground(new Background(new BackgroundFill(Color.rgb(164, 119, 255), CornerRadii.EMPTY, Insets.EMPTY)));
+
         channelNameLabel.setTextFill(Color.WHITE);
         resultLabel.setTextFill(Color.WHITE);
         checkButton.setStyle("-fx-background-color: #6441a5 ; -fx-text-fill: white;");
 
-        VBox.setMargin(channelNameLabel, new Insets(0, 10, 0, 10));
-        VBox.setMargin(channelNameField, new Insets(0, 100, 0, 100));
-        VBox.setMargin(channelComboBox, new Insets(0, 100, 0, 100));
-        VBox.setMargin(checkButton, new Insets(0, 10, 0, 10));
-        VBox.setMargin(resultLabel, new Insets(10));
+        double commonWidth = 200;
+        channelNameField.setPrefWidth(commonWidth);
+        channelNameField.setMinWidth(commonWidth);
+        channelNameField.setMaxWidth(commonWidth);
 
-        layout.getChildren().addAll(inputContainer, channelComboBox, checkButton, resultLabel);
+        channelComboBox.setPrefWidth(commonWidth);
+        channelComboBox.setMinWidth(commonWidth);
+        channelComboBox.setMaxWidth(commonWidth);
+
+        checkButton.setPrefWidth(commonWidth);
+        checkButton.setMinWidth(commonWidth);
+        checkButton.setMaxWidth(commonWidth);
+
+        VBox.setMargin(channelNameLabel, new Insets(0, 10, 0, 10));
+        VBox.setMargin(channelNameField, new Insets(0, 50, 0, 50));
+        VBox.setMargin(channelComboBox, new Insets(0, 10, 0, 10));
+        VBox.setMargin(checkButton, new Insets(20, 0, 0, 0));
+        VBox.setMargin(resultLabel, new Insets(10, 0, 0, 0));
+
+        layout.getChildren().addAll(channelNameLabel, channelNameField, channelComboBox, checkButton, resultLabel);
         ScrollPane scrollPane = new ScrollPane(layout);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
