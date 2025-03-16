@@ -96,9 +96,23 @@ public class TwitchStreamChecker extends Application {
 
             if (isLive) {
                 resultLabel.setText("Channel is streaming!");
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Streaming, want to open on browser?", ButtonType.YES, ButtonType.NO);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Stream is live!");
+                alert.setHeaderText(null);
+                alert.setContentText("Streaming! Do you want to open it in the browser?");
+
+                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/twitch_icon.png"))));
+
+                DialogPane dialogPane = alert.getDialogPane();
+                dialogPane.setStyle("-fx-background-color: #6441A5; -fx-text-fill: white; -fx-font-size: 14px;");
+
+                ButtonType yesButton = new ButtonType("Open Stream", ButtonBar.ButtonData.YES);
+                ButtonType noButton = new ButtonType("Cancel", ButtonBar.ButtonData.NO);
+                alert.getButtonTypes().setAll(yesButton, noButton);
+
                 alert.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.YES) {
+                    if (response == yesButton) {
                         openStreamInBrowser(url);
                     }
                 });
