@@ -30,9 +30,7 @@ public class StreamMonitor extends Thread {
     public void run() {
         try {
             while (true) {
-                String url = "https://www.twitch.tv/" + channelName.toLowerCase();
-                Document doc = Jsoup.connect(url).get();
-                boolean isLive = doc.html().contains("isLiveBroadcast");
+                boolean isLive = TwitchAPIClient.isStreamLive(channelName);
                 if (!isLive && wasLive) {
                     Platform.runLater(this::showStreamStoppedAlert);
                     break;
@@ -75,10 +73,6 @@ public class StreamMonitor extends Thread {
 
             if (os.contains("win")) {
                 process = Runtime.getRuntime().exec("taskkill /F /IM chrome.exe");
-            } else if (os.contains("mac")) {
-                process = Runtime.getRuntime().exec("pkill -f Chrome");
-            } else if (os.contains("nix") || os.contains("nux")) {
-                process = Runtime.getRuntime().exec("pkill -f chrome");
             }
 
             if (process != null) {

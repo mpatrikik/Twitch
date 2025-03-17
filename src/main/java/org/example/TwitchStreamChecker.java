@@ -101,17 +101,17 @@ public class TwitchStreamChecker extends Application {
 
     private void checkStreamStatus(String channelName) {
         try {
+            boolean isLive = TwitchAPIClient.isStreamLive(channelName);
             String url = "https://www.twitch.tv/" + channelName.toLowerCase();
-            Document doc = Jsoup.connect(url).get();
-            boolean isLive = doc.html().contains("isLiveBroadcast");
-            System.out.println(doc.html());
 
             if (isLive) {
-                resultLabel.setText("Channel is streaming!");
+                resultLabel.setText("Channel is streaming :)");
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Stream is live!");
                 alert.setHeaderText(null);
-                alert.setContentText("Streaming! Do you want to open it in the browser?");
+                Label contentLabel = new Label("Streaming! Do you want to open in the browser?");
+                contentLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+                alert.getDialogPane().setContent(contentLabel);
 
                 Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/twitch_icon.png"))));
@@ -136,7 +136,7 @@ public class TwitchStreamChecker extends Application {
                     channelComboBox.getItems().add(channelName);
                 }
             } else {
-                resultLabel.setText("Stream is offline.");
+                resultLabel.setText("Stream is offline :(");
             }
         } catch (Exception ex) {
             resultLabel.setText("Error: " + ex.getMessage());
