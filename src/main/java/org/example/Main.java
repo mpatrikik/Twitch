@@ -9,8 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class TwitchStreamChecker extends Application {
+public class Main extends Application {
 
     private TextField channelNameField;
     private Label resultLabel;
@@ -99,7 +97,7 @@ public class TwitchStreamChecker extends Application {
         primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> { layout.setPrefHeight(newVal.doubleValue()); });
     }
 
-    private void checkStreamStatus(String channelName) {
+    public void checkStreamStatus(String channelName) {
         try {
             boolean isLive = TwitchAPIClient.isStreamLive(channelName);
             String url = "https://www.twitch.tv/" + channelName.toLowerCase();

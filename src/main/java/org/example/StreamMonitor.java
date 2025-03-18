@@ -7,8 +7,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Stage;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.io.BufferedReader;
 import java.io.IOException;
