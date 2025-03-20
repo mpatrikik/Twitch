@@ -14,7 +14,7 @@ public class TwitchAPIClient {
     private static final String CLIENT_ID = "z7hne9rwv09io02mh9b8sj33et9ly0";
     private static final String CLIENT_SECRET = "1osuv4rg1my553fg3qjlertbmezmhb";
     private static final String TOKEN_URL = "https://id.twitch.tv/oauth2/token";
-    public static final String STREAMS_URL = "https://api.twitch.tv/helix/streams?=user_login=";
+    public static final String STREAMS_URL = "https://api.twitch.tv/helix/streams?user_login=";
     private static String accessToken = "";
 
     private static void authenticate() {
