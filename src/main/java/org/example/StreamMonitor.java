@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,7 +44,7 @@ public class StreamMonitor extends Thread {
 
     private void showStreamStoppedAlert() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Stream Stopped");
+        alert.setTitle(channelName + "stopped streaming!");
         alert.setHeaderText(null);
         alert.setContentText("The stream has ended. Do you want to close Chrome?");
 

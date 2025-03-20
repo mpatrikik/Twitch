@@ -103,11 +103,12 @@ public class Main extends Application {
             String url = "https://www.twitch.tv/" + channelName.toLowerCase();
 
             if (isLive) {
-                resultLabel.setText("Channel is streaming :)");
+                resultLabel.setText(channelName + " is streaming :)");
+                resultLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Stream is live!");
+                alert.setTitle(channelName + " is live!");
                 alert.setHeaderText(null);
-                Label contentLabel = new Label("Streaming! Do you want to open in the browser?");
+                Label contentLabel = new Label("Do you want to open in the browser?");
                 contentLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
                 alert.getDialogPane().setContent(contentLabel);
 
@@ -134,7 +135,8 @@ public class Main extends Application {
                     channelComboBox.getItems().add(channelName);
                 }
             } else {
-                resultLabel.setText("Stream is offline :(");
+                resultLabel.setText(channelName + " is offline :(");
+                resultLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
             }
         } catch (Exception ex) {
             resultLabel.setText("Error: " + ex.getMessage());
