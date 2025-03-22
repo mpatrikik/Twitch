@@ -4,8 +4,9 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.Image;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -65,7 +66,9 @@ public class StreamMonitor extends Thread {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(channelName + "stopped streaming!");
         alert.setHeaderText(null);
-        alert.setContentText("The stream has ended. Do you want to close Chrome?");
+        Label contentLabel = new Label("The stream has ended. Do you want to close Chrome?");
+        contentLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        alert.getDialogPane().setContent(contentLabel);
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(alertIcon);
