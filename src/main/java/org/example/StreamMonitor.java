@@ -12,12 +12,16 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class StreamMonitor extends Thread {
     private final String channelName;
     private boolean wasLive;
     private final Image alertIcon;
+    private static final Set<String> activeMonitors = new HashSet<>();
+    private boolean alertShown = false;
 
     public StreamMonitor(String channelName) {
         this.channelName = channelName;
@@ -27,11 +31,21 @@ public class StreamMonitor extends Thread {
 
     @Override
     public void run() {
+        synchronized (activeMonitors) {
+            if (activeMonitors.contains(channelName)) {
+                return;
+            }
+            activeMonitors.add(channelName);
+        }
+
         try {
             while (true) {
                 boolean isLive = TwitchAPIClient.isStreamLive(channelName);
                 if (!isLive && wasLive) {
-                    Platform.runLater(this::showStreamStoppedAlert);
+                    if (!alertShown) {
+                        alertShown = true;
+                        Platform.runLater(this::showStreamStoppedAlert);
+                    }
                     break;
                 }
                 wasLive = isLive;
@@ -39,6 +53,11 @@ public class StreamMonitor extends Thread {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            synchronized (activeMonitors) {
+                activeMonitors.remove(channelName);
+            }
         }
     }
 

@@ -105,12 +105,15 @@ public class Main extends Application {
             if (isLive) {
                 resultLabel.setText(channelName + " is streaming :)");
                 resultLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+                new StreamMonitor(channelName).start();
+
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle(channelName + " is live!");
                 alert.setHeaderText(null);
                 Label contentLabel = new Label("Do you want to open in the browser?");
                 contentLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-                alert.getDialogPane().setContent(contentLabel);
+                alert.getDialogPane().setContent(contentLabel); 
 
                 Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/twitch_icon.png"))));
@@ -125,7 +128,6 @@ public class Main extends Application {
                 alert.showAndWait().ifPresent(response -> {
                     if (response == yesButton) {
                         openStreamInBrowser(url);
-                        new StreamMonitor(channelName).start();
                     }
                 });
 
