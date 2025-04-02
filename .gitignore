@@ -8,7 +8,6 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
-.idea/src/main/resources/creditnails.json
 *.iws
 *.iml
 *.ipr
@@ -37,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Creditnails ###
+src/main/resources/creditnails.json
