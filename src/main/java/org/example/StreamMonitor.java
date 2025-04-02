@@ -67,7 +67,7 @@ public class StreamMonitor extends Thread {
         startBeeping(10);
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(channelName + "stopped streaming!");
+        alert.setTitle(channelName + " stopped streaming!");
         alert.setHeaderText(null);
         Label contentLabel = new Label("The stream has ended!");
         contentLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
@@ -85,16 +85,41 @@ public class StreamMonitor extends Thread {
         ButtonType noButton = new ButtonType("Keep open everything", ButtonBar.ButtonData.NO);
         alert.getButtonTypes().setAll(shPCButton, clsChrome, noButton);
 
+        new Thread(() -> {
+            try {
+                Thread.sleep(10000); // 10 másodperc várakozás
+                Platform.runLater(() -> {
+                    if (alert.isShowing()) {
+                        sendStreamStoppedEmail(); // Ha az alert még mindig nyitva, küldjük az emailt
+                    }
+                });
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+
         alert.showAndWait().ifPresent(response -> {
             if (response == shPCButton) {
                 shPC();
-            } else {
-                if (response == clsChrome) {
-                    clsChrome();
-                }
+            } else if (response == clsChrome) {
+                clsChrome();
             }
         });
     }
+
+
+    private void sendStreamStoppedEmail() {
+        String emailBody = "<h3>The stream has ended!</h3>"
+                + "<p>Choose what to do:</p>"
+                + "<ul>"
+                + "<li><a href='http://localhost:8080/action?closechrome'>Close Chrome</a></li>"
+                + "<li><a href='http://localhost:8080/action?shutdown'>Close Chrome + IntelliJ + Shutdown PC</a></li>"
+                + "<li><a href='http://localhost:8080/action?noop'>Do nothing</a></li>"
+                + "</ul>";
+
+        EmailSender.sendEmail("your-phone-email@gmail.com", "Stream Stopped!", emailBody);
+    }
+
 
     private void startBeeping(int seconds) {
         new Thread(() -> {
@@ -111,7 +136,8 @@ public class StreamMonitor extends Thread {
         }).start();
     }
 
-    private void shPC() {
+
+    public static void shPC() {
         try {
             String os = System.getProperty("os.name").toLowerCase();
             Process process = null;
@@ -134,7 +160,8 @@ public class StreamMonitor extends Thread {
         }
     }
 
-    private void clsChrome() {
+
+    public static void clsChrome() {
         try {
             String os = System.getProperty("os.name").toLowerCase();
             Process process = null;
@@ -154,4 +181,5 @@ public class StreamMonitor extends Thread {
             e.printStackTrace();
         }
     }
+
 }

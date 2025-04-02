@@ -27,6 +27,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        WebSrever.startServer();
+
         primaryStage.setTitle("Twitch Stream Checker");
 
         Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/twitch_icon.png")));
