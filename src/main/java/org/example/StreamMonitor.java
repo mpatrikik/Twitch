@@ -80,17 +80,17 @@ public class StreamMonitor extends Thread {
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setStyle("-fx-background-color: #6441A5; -fx-text-fill: white; -fx-font-size: 14px;");
 
-        ButtonType clsChromeshPCButton = new ButtonType("\uD83D\uDDD9 Chrome & ⏻  \uD83D\uDCBB", ButtonBar.ButtonData.YES);
+        ButtonType shPCButton = new ButtonType("⏻  \uD83D\uDCBB", ButtonBar.ButtonData.YES);
         ButtonType clsChrome = new ButtonType("\uD83D\uDDD9 Chrome");
         ButtonType noButton = new ButtonType("Keep open everything", ButtonBar.ButtonData.NO);
-        alert.getButtonTypes().setAll(clsChromeshPCButton, clsChrome, noButton);
+        alert.getButtonTypes().setAll(shPCButton, clsChrome, noButton);
 
         alert.showAndWait().ifPresent(response -> {
-            if (response == clsChromeshPCButton) {
-                closeChromeandshPC();
+            if (response == shPCButton) {
+                shPC();
             } else {
                 if (response == clsChrome) {
-                    closeChrome();
+                    clsChrome();
                 }
             }
         });
@@ -111,13 +111,14 @@ public class StreamMonitor extends Thread {
         }).start();
     }
 
-    private void closeChromeandshPC() {
+    private void shPC() {
         try {
             String os = System.getProperty("os.name").toLowerCase();
             Process process = null;
 
             if (os.contains("win")) {
                 process = Runtime.getRuntime().exec("taskkill /F /IM chrome.exe");
+                Runtime.getRuntime().exec("taskkill /F /IM idea64.exe");
                 Runtime.getRuntime().exec("shutdown -s -t 0");
             }
 
@@ -133,7 +134,7 @@ public class StreamMonitor extends Thread {
         }
     }
 
-    private void closeChrome() {
+    private void clsChrome() {
         try {
             String os = System.getProperty("os.name").toLowerCase();
             Process process = null;
