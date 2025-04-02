@@ -8,7 +8,7 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
-.idea/src/main/java/org.example/resources/credentials..json
+.idea/src/main/java/org.example/resources/credentials.json
 *.iws
 *.iml
 *.ipr
