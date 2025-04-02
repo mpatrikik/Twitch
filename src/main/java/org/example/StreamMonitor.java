@@ -1,6 +1,7 @@
 package org.example;
 
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -68,8 +69,9 @@ public class StreamMonitor extends Thread {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(channelName + "stopped streaming!");
         alert.setHeaderText(null);
-        Label contentLabel = new Label("The stream has ended. Do you want to close Chrome?");
+        Label contentLabel = new Label("The stream has ended!");
         contentLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        contentLabel.setAlignment(Pos.CENTER);
         alert.getDialogPane().setContent(contentLabel);
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
@@ -78,13 +80,18 @@ public class StreamMonitor extends Thread {
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setStyle("-fx-background-color: #6441A5; -fx-text-fill: white; -fx-font-size: 14px;");
 
-        ButtonType yesButton = new ButtonType("Close Chrome", ButtonBar.ButtonData.YES);
-        ButtonType noButton = new ButtonType("Keep Open", ButtonBar.ButtonData.NO);
-        alert.getButtonTypes().setAll(yesButton, noButton);
+        ButtonType clsChromeshPCButton = new ButtonType("\uD83D\uDDD9 Chrome & ⏻  \uD83D\uDCBB", ButtonBar.ButtonData.YES);
+        ButtonType clsChrome = new ButtonType("\uD83D\uDDD9 Chrome");
+        ButtonType noButton = new ButtonType("Keep open everything", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(clsChromeshPCButton, clsChrome, noButton);
 
         alert.showAndWait().ifPresent(response -> {
-            if (response == yesButton) {
-                closeChrome();
+            if (response == clsChromeshPCButton) {
+                closeChromeandshPC();
+            } else {
+                if (response == clsChrome) {
+                    closeChrome();
+                }
             }
         });
     }
@@ -102,6 +109,28 @@ public class StreamMonitor extends Thread {
                 }
             }
         }).start();
+    }
+
+    private void closeChromeandshPC() {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            Process process = null;
+
+            if (os.contains("win")) {
+                process = Runtime.getRuntime().exec("taskkill /F /IM chrome.exe");
+                Runtime.getRuntime().exec("shutdown -s -t 0");
+            }
+
+            if (process != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void closeChrome() {
