@@ -63,6 +63,8 @@ public class StreamMonitor extends Thread {
     }
 
     private void showStreamStoppedAlert() {
+        startBeeping(10);
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(channelName + "stopped streaming!");
         alert.setHeaderText(null);
@@ -85,6 +87,21 @@ public class StreamMonitor extends Thread {
                 closeChrome();
             }
         });
+    }
+
+    private void startBeeping(int seconds) {
+        new Thread(() -> {
+            long startTime = System.currentTimeMillis();
+            while (System.currentTimeMillis() - startTime < seconds * 1000) {
+                Toolkit.getDefaultToolkit().beep();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }).start();
     }
 
     private void closeChrome() {
