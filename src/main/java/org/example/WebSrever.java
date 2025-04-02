@@ -10,11 +10,11 @@ import java.net.InetSocketAddress;
 public class WebSrever {
     public static void startServer() {
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(8081), 0);
             server.createContext("/action", new ActionHandler());
             server.setExecutor(null);
             server.start();
-            System.out.println("🌍 HTTP Server started on port 8080");
+            System.out.println("🌍 HTTP Server started on port 8081");
         } catch (IOException e) {
             e.printStackTrace();
         }

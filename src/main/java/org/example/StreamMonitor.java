@@ -87,10 +87,10 @@ public class StreamMonitor extends Thread {
 
         new Thread(() -> {
             try {
-                Thread.sleep(10000); // 10 másodperc várakozás
+                Thread.sleep(5000);
                 Platform.runLater(() -> {
                     if (alert.isShowing()) {
-                        sendStreamStoppedEmail(); // Ha az alert még mindig nyitva, küldjük az emailt
+                        sendStreamStoppedEmail();
                     }
                 });
             } catch (InterruptedException e) {
@@ -112,12 +112,12 @@ public class StreamMonitor extends Thread {
         String emailBody = "<h3>The stream has ended!</h3>"
                 + "<p>Choose what to do:</p>"
                 + "<ul>"
-                + "<li><a href='http://localhost:8080/action?closechrome'>Close Chrome</a></li>"
-                + "<li><a href='http://localhost:8080/action?shutdown'>Close Chrome + IntelliJ + Shutdown PC</a></li>"
-                + "<li><a href='http://localhost:8080/action?noop'>Do nothing</a></li>"
+                + "<li><a href='http://localhost:8081/action?closechrome'>Close Chrome</a></li>"
+                + "<li><a href='http://localhost:8081/action?shutdown'>Close Chrome + IntelliJ + Shutdown PC</a></li>"
+                + "<li><a href='http://localhost:8081/action?noop'>Do nothing</a></li>"
                 + "</ul>";
 
-        EmailSender.sendEmail("your-phone-email@gmail.com", "Stream Stopped!", emailBody);
+        EmailSender.sendEmail("m.patrik01@gmail.com", "Stream Stopped!", emailBody);
     }
 
 
