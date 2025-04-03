@@ -11,6 +11,8 @@ target/
 *.iws
 *.iml
 *.ipr
+creditnails.json
+service_account.json
 
 ### Eclipse ###
 .apt_generated

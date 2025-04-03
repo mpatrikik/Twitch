@@ -1,67 +1,55 @@
 package org.example;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 
+import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.Session;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.*;
+
 import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
 
 public class EmailSender {
     private static final String APPLICATION_NAME = "Twitch Stream Notifier";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-    private static final List<String> SCOPES = Collections.singletonList(GmailScopes.MAIL_GOOGLE_COM);
-    private static final String TOKENS_DIRECTORY_PATH = "tokens"; // Tokenek mentési helye
-    private static final String CREDENTIALS_FILE_PATH = "C:\\egyebek\\prog\\Java\\Twitch\\src\\main\\resources\\creditnails.json";
+    private static final String SERVICE_ACCOUNT_KEY_PATH = "C:\\egyebek\\prog\\Java\\Twitch\\src\\main\\resources\\service_account.json";
+    private static final String ADMIN_EMAIL = "m.patrik01@gmail.com";
+
     private static Gmail gmailService;
 
     static {
         try {
-            Credential credential = getCredentials();
-            gmailService = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                    .setApplicationName(APPLICATION_NAME)
-                    .build();
+            gmailService = createGmailService();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static Credential getCredentials() throws Exception {
-        InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+    private static Gmail createGmailService() throws IOException {
+        try {
+            FileInputStream serviceAccountStream = new FileInputStream(SERVICE_ACCOUNT_KEY_PATH);
+            GoogleCredentials credentials = ServiceAccountCredentials.fromStream(serviceAccountStream)
+                    .createScoped(Collections.singleton(GmailScopes.GMAIL_SEND))
+                    .createDelegated(ADMIN_EMAIL);
 
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setAccessType("offline")
-                .build();
+            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-        System.out.println("🌐 Open the following URL in your browser and authorize the application:");
-        String url = flow.newAuthorizationUrl().setRedirectUri("http://localhost").build();
-        System.out.println(url);
-
-        System.out.print("Enter the authorization code: ");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String code = br.readLine();
-
-        GoogleTokenResponse response = flow.newTokenRequest(code).setRedirectUri("http://localhost").execute();
-        return flow.createAndStoreCredential(response, "user");
+            return new Gmail.Builder(httpTransport, JSON_FACTORY, (HttpRequestInitializer) credentials)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException("Hiba történt a Gmail szolgáltatás inicializálásakor", e);
+        }
     }
 
     public static void sendEmail(String to, String subject, String body) {
@@ -70,7 +58,7 @@ public class EmailSender {
             Session session = Session.getDefaultInstance(props, null);
 
             MimeMessage email = new MimeMessage(session);
-            email.setFrom(new InternetAddress("m.patrik01@gmail.com"));
+            email.setFrom(new InternetAddress(ADMIN_EMAIL));
             email.addRecipient(jakarta.mail.Message.RecipientType.TO, new InternetAddress(to));
             email.setSubject(subject);
             email.setContent(body, "text/html; charset=utf-8");
