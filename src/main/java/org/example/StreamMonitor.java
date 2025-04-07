@@ -64,7 +64,7 @@ public class StreamMonitor extends Thread {
     }
 
     private void showStreamStoppedAlert() {
-        startBeeping(10);
+        startBeeping(5);
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(channelName + " stopped streaming!");

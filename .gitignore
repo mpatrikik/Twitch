@@ -11,7 +11,7 @@ target/
 *.iws
 *.iml
 *.ipr
-creditnails.json
+credentails.json
 service_account.json
 
 ### Eclipse ###
@@ -40,4 +40,4 @@ build/
 .DS_Store
 
 ### Creditnails ###
-src/main/resources/creditnails.json
+src/main/resources/credentails.json
