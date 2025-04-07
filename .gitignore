@@ -11,8 +11,6 @@ target/
 *.iws
 *.iml
 *.ipr
-credentails.json
-service_account.json
 
 ### Eclipse ###
 .apt_generated

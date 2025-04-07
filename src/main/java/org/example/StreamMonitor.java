@@ -24,6 +24,7 @@ public class StreamMonitor extends Thread {
     private final Image alertIcon;
     private static final Set<String> activeMonitors = new HashSet<>();
     private boolean alertShown = false;
+    private String baseUrl = "https://ccd9-92-249-232-52.ngrok-free.app";
 
     public StreamMonitor(String channelName) {
         this.channelName = channelName;
@@ -112,9 +113,9 @@ public class StreamMonitor extends Thread {
         String emailBody = "<h3>The stream has ended!</h3>"
                 + "<p>Choose what to do:</p>"
                 + "<ul>"
-                + "<li><a href='http://localhost:8081/action?closechrome'>Close Chrome</a></li>"
-                + "<li><a href='http://localhost:8081/action?shutdown'>Close Chrome + IntelliJ + Shutdown PC</a></li>"
-                + "<li><a href='http://localhost:8081/action?noop'>Do nothing</a></li>"
+                + "<li><a href='" + baseUrl + "/action?closechrome'>Close Chrome</a></li>"
+                + "<li><a href='" + baseUrl + "/action?shutdown'>Close Chrome + IntelliJ + Shutdown PC</a></li>"
+                + "<li><a href='" + baseUrl + "/action?noop'>Do nothing</a></li>"
                 + "</ul>";
 
         EmailSender.sendEmail("m.patrik01@gmail.com", "Stream Stopped!", emailBody);
